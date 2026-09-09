@@ -1,7 +1,47 @@
 ---
-title: "Census"
+title: "Racial Demographics of Sarasota County"
+execute:
+  echo: false
+  message: false
+  warning: false
 ---
 
-This is a Quarto website.
+```{r}
+library(tidyverse)
+library(tigris)
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+options(tigris_use_cache = TRUE)
+
+# Load data previously downloaded to data/
+race_data <- read_rds("data/sarasota_race.rds")
+
+# Calculate percentage of minority residents by tract
+race_wide <- race_data |>
+  pivot_wider(names_from = variable, values_from = value) |>
+  mutate(pct_minority = 100 * (1 - White / Total))
+
+# Get tract geometries for Sarasota County
+sarasota_tracts <- tracts(state = "FL", county = "Sarasota", year = 2020, cb = TRUE)
+
+# Join boundaries with the downloaded race data
+sarasota_map <- left_join(sarasota_tracts, race_wide, by = "GEOID")
+
+# Plot choropleth map
+ggplot(sarasota_map) +
+  geom_sf(aes(fill = pct_minority), color = "white", linewidth = 0.2) +
+  scale_fill_viridis_c(
+    option = "magma",
+    direction = -1,
+    name = "% Minority",
+    labels = scales::label_percent(scale = 1)
+  ) +
+  labs(
+    title = "Racial Demographics in Sarasota County, Florida",
+    subtitle = "Percentage of non-White residents by census tract",
+    caption = "Source: 2020 Decennial Census via tidycensus"
+  ) +
+  theme_void()
+```
+
+The choropleth above displays the distribution of minority residents across census tracts in Sarasota County from the 2020 Decennial Census, showing higher concentrations of diversity around urban centers compared to coastal and suburban tracts.
+
