@@ -9,8 +9,8 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Census",
+    "title": "Racial Demographics of Sarasota County",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "The choropleth above displays the distribution of minority residents across census tracts in Sarasota County from the 2020 Decennial Census, showing higher concentrations of diversity around urban centers compared to coastal and suburban tracts."
   }
 ]
